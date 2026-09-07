@@ -18,6 +18,14 @@ if http_proxy:
 
 client = genai.Client(api_key=api_key)
 
+REPO_URL = "https://github.com/maravondra/cv-ai-generator"
+
+AI_DISCLAIMER_MD = (
+    "\n\n---\n\n"
+    "🤖 *Toto CV bylo vygenerováno AI agentem, kterého vyvinul Marek Vondra. "
+    f"Podrobný popis, jak agent funguje: [{REPO_URL.split('//', 1)[1]}]({REPO_URL})*\n"
+)
+
 
 def load_knowledge_base(kb_dir="./knowledge_base"):
     knowledge_text = ""
@@ -94,8 +102,10 @@ def generate_tailored_cv_md(jd_filename):
     base_name = os.path.splitext(clean_filename)[0]
     md_filename = f"CV_Marek_Vondra_{base_name}.md"
 
+    cv_content = response.text.strip() + AI_DISCLAIMER_MD
+
     with open(md_filename, "w", encoding="utf-8") as f:
-        f.write(response.text)
+        f.write(cv_content)
 
     print(f"✅ Markdown byl úspěšně uložen do: {md_filename}")
     print(f"👉 Pro vygenerování PDF spusť: python render_cv_pdf.py {md_filename}")

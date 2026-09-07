@@ -29,7 +29,6 @@ PRIMARY = colors.HexColor("#0F172A")     # námořnická modrá / slate pro nadp
 SECONDARY = colors.HexColor("#0D9488")   # teal akcent pro odkazy, odrážky, linky
 TEXT = colors.HexColor("#334155")        # tmavě břidlicová místo černé
 MUTED = colors.HexColor("#64748B")       # tlumená šedá pro data/lokace
-FAINT = colors.HexColor("#94A3B8")       # nejjemnější šedá (patička)
 SIDEBAR_BG = colors.HexColor("#F1F5F9")  # ledově šedé pozadí postranního panelu
 DIVIDER = colors.HexColor("#E2E8F0")     # jemná dělicí linka mezi sloupci
 
@@ -199,6 +198,11 @@ def parse_markdown(md_text):
 
         if stripped.startswith("### "):
             current.blocks.append(("subheading", stripped[4:].strip()))
+            continue
+
+        if stripped.startswith("🤖"):
+            # AI disclaimer je vykreslován samostatně v patičce každé stránky
+            # (viz NumberedCanvas._draw_footer), takže ho v těle CV přeskočíme.
             continue
 
         if stripped.startswith("- ") or stripped.startswith("* "):
@@ -413,6 +417,11 @@ def paginate(flowables, width, page_heights):
 # ---------------------------------------------------------------------------
 # Číslované PDF (patička "Strana X z Y")
 # ---------------------------------------------------------------------------
+AI_DISCLAIMER_LABEL = "Vygenerováno AI agentem, kterého vyvinul Marek Vondra  ·  "
+AI_DISCLAIMER_LINK_TEXT = "github.com/maravondra/cv-ai-generator"
+AI_DISCLAIMER_URL = "https://github.com/maravondra/cv-ai-generator"
+
+
 class NumberedCanvas(pdfcanvas.Canvas):
     def __init__(self, *args, **kwargs):
         pdfcanvas.Canvas.__init__(self, *args, **kwargs)
@@ -430,12 +439,78 @@ class NumberedCanvas(pdfcanvas.Canvas):
             pdfcanvas.Canvas.showPage(self)
         pdfcanvas.Canvas.save(self)
 
-    def _draw_footer(self, total_pages):
-        page_w, _ = PAGE_SIZE
+    def _link_annotation(self, url, rect, name):
+        from reportlab.pdfbase.pdfdoc import PDFDictionary, PDFName, PDFArray, PDFString
+
+        ann = PDFDictionary()
+        ann["Type"] = PDFName("Annot")
+        ann["Subtype"] = PDFName("Link")
+        ann["Rect"] = PDFArray(self._absRect(rect, relative=0))
+        ann["Border"] = PDFArray([0, 0, 0])
+        action = PDFDictionary()
+        action["Type"] = PDFName("Action")
+        action["S"] = PDFName("URI")
+        action["URI"] = PDFString(url)
+        ann["A"] = action
+        self._addAnnotation(ann, name=name)
+
+    def _draw_bot_icon(self, x, y, size):
+        """Vykreslí jednoduchou vektorovou ikonu robota (hlava, anténa, oči).
+        Emoji znak 🤖 není v glyphsetu bundlovaného Roboto fontu, takže by se
+        vykreslil jako prázdný/chybějící znak – proto ikonu kreslíme ručně."""
         self.saveState()
-        self.setFont(FONT_NAME, 6.5)
-        self.setFillColor(FAINT)
-        self.drawRightString(page_w - MARGIN_R, PAGE_SIZE[1] - 20, "Generováno AI agentem, kterého vyvinul Marek Vondra")
+        self.setStrokeColor(SECONDARY)
+        self.setFillColor(SECONDARY)
+        self.setLineWidth(0.7)
+
+        head_w, head_h = size, size * 0.8
+        antenna_x = x + head_w / 2
+        self.line(antenna_x, y + head_h, antenna_x, y + head_h + size * 0.3)
+        self.circle(antenna_x, y + head_h + size * 0.38, size * 0.09, stroke=0, fill=1)
+
+        self.roundRect(x, y, head_w, head_h, size * 0.18, stroke=1, fill=0)
+
+        eye_r = size * 0.09
+        self.circle(x + head_w * 0.3, y + head_h * 0.52, eye_r, stroke=0, fill=1)
+        self.circle(x + head_w * 0.7, y + head_h * 0.52, eye_r, stroke=0, fill=1)
+        self.restoreState()
+
+    def _draw_footer(self, total_pages):
+        page_w, page_h = PAGE_SIZE
+        self.saveState()
+
+        font_size = 7.3
+        self.setFont(FONT_NAME, font_size)
+        label_w = self.stringWidth(AI_DISCLAIMER_LABEL, FONT_NAME, font_size)
+        link_w = self.stringWidth(AI_DISCLAIMER_LINK_TEXT, FONT_NAME, font_size)
+
+        icon_size = 7.0
+        icon_gap = 4.0
+        top_y = page_h - 20
+        total_w = icon_size + icon_gap + label_w + link_w
+        start_x = page_w - MARGIN_R - total_w
+
+        self._draw_bot_icon(start_x, top_y - 1.5, icon_size)
+
+        text_x = start_x + icon_size + icon_gap
+        self.setFillColor(MUTED)
+        self.drawString(text_x, top_y, AI_DISCLAIMER_LABEL)
+
+        link_x = text_x + label_w
+        self.setFillColor(SECONDARY)
+        self.drawString(link_x, top_y, AI_DISCLAIMER_LINK_TEXT)
+
+        # Celý řádek (ikona + text + odkaz) je klikatelný a vede na repozitář
+        # s detailním popisem, jak AI agent funguje. Nejde použít linkURL()
+        # přímo: jeho automatické pojmenování anotace (Annot.NUMBERn) se
+        # opírá o _annotationCount, který NumberedCanvas při ukládání každé
+        # stránky vrací zpět do stavu před vykreslením patičky – bez
+        # explicitního jména by tak kolidovaly anotace napříč stránkami.
+        self._link_annotation(
+            AI_DISCLAIMER_URL,
+            (start_x, top_y - 2, link_x + link_w, top_y + font_size + 2),
+            name=f"AIDisclaimerLink{self._pageNumber}",
+        )
 
         self.setStrokeColor(DIVIDER)
         self.setLineWidth(0.5)
