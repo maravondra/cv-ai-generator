@@ -500,6 +500,12 @@ class NumberedCanvas(pdfcanvas.Canvas):
         self.setFillColor(SECONDARY)
         self.drawString(link_x, top_y, AI_DISCLAIMER_LINK_TEXT)
 
+        # Podtržení, aby bylo na první pohled jasné, že jde o klikatelný odkaz.
+        self.setStrokeColor(SECONDARY)
+        self.setLineWidth(0.5)
+        underline_y = top_y - 1.2
+        self.line(link_x, underline_y, link_x + link_w, underline_y)
+
         # Celý řádek (ikona + text + odkaz) je klikatelný a vede na repozitář
         # s detailním popisem, jak AI agent funguje. Nejde použít linkURL()
         # přímo: jeho automatické pojmenování anotace (Annot.NUMBERn) se
