@@ -1,5 +1,12 @@
 # Profile Overview: Ing. Marek Vondra
 
+## Contact
+* **Email:** maravondra@gmail.com
+* **Phone:** +49 1514 3123576
+* **Location:** Prague, Czech Republic
+* **LinkedIn:** https://www.linkedin.com/in/marek-vondra-9738b673/
+* **GitHub:** https://github.com/maravondra/cv-ai-generator
+
 ## Executive Summary
 Ing. Marek Vondra je **Tech Lead**, **Enterprise & Cloud Architect** a **Chief Technology Officer** s více než 10 lety praxe v návrhu, architektuře a doručování rozsáhlých enterprise a cloud-native systémů (T-Systems, Skoda Auto, Volkswagen, Mercedes a HelioCare)[cite: 1, 2].
 
