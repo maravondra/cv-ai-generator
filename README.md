@@ -55,12 +55,19 @@ Optional: if you're behind a proxy, `HTTP_PROXY` / `HTTPS_PROXY` are also picked
 
 ```
 .
-├── generate_cv_md.py       # Generates a tailored CV in Markdown via Gemini
-├── render_cv_pdf.py        # Renders a Markdown CV into a styled PDF
-├── knowledge_base/         # Candidate's background, structured as Markdown
-├── job_descriptions/       # Job postings to tailor CVs against
+├── generate_cv_md.py                        # Generates a tailored CV in Markdown via Gemini
+├── render_cv_pdf.py                         # Renders a Markdown CV into a styled PDF
+├── knowledge_base/                          # Candidate's background, structured as Markdown
+│   ├── 01_profile_overview.md               # Summary, contact info, competencies, education, languages
+│   ├── 02_architecture_and_cloud.md         # Architecture & cloud engineering experience
+│   ├── 03_ai_agentic_engineering.md         # AI agentic engineering track record
+│   ├── 04_leadership_and_governance.md      # People leadership & technical governance
+│   ├── 05_faq_for_recruiters.md             # Recruiter-facing Q&A
+│   ├── 06_tribe_vision.md                   # Vision/positioning narrative
+│   └── 07_pracovni_historie.md              # Full chronological work history (CZ)
+├── job_descriptions/                        # Job postings to tailor CVs against
 ├── requirements.txt
-└── .env                    # API keys (not committed)
+└── .env                                     # API keys (not committed)
 ```
 
 ## Notes
