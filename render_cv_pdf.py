@@ -60,6 +60,12 @@ def register_project_fonts():
             "boldItalic": Path("C:/Windows/Fonts/arialbi.ttf"),
         },
         {
+            "regular": Path("/System/Library/Fonts/Supplemental/Arial.ttf"),
+            "bold": Path("/System/Library/Fonts/Supplemental/Arial Bold.ttf"),
+            "italic": Path("/System/Library/Fonts/Supplemental/Arial Italic.ttf"),
+            "boldItalic": Path("/System/Library/Fonts/Supplemental/Arial Bold Italic.ttf"),
+        },
+        {
             "regular": Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
             "bold": Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
             "italic": Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Oblique.ttf"),

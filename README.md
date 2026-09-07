@@ -47,9 +47,9 @@ Optional: if you're behind a proxy, `HTTP_PROXY` / `HTTPS_PROXY` are also picked
 
    Use `--output` / `-o` to override the output filename.
 
-### Custom fonts (optional)
+### Fonts
 
-`render_cv_pdf.py` looks for Roboto fonts (with diacritics support) under `font/static/` (`Roboto-Regular.ttf`, `Roboto-Bold.ttf`, `Roboto-Italic.ttf`, `Roboto-BoldItalic.ttf`). If they're not present, it falls back to a system font or Helvetica.
+`render_cv_pdf.py` uses the Roboto fonts bundled under `font/static/` (`Roboto-Regular.ttf`, `Roboto-Bold.ttf`, `Roboto-Italic.ttf`, `Roboto-BoldItalic.ttf`, Apache 2.0 licensed), which have full Czech diacritics support. If those files are ever removed, it falls back to a system font (Arial/DejaVu Sans) or, as a last resort, the built-in Helvetica — which lacks Czech caron characters (č, ř, ě, š, ž...), so keep the bundled fonts in place for correct rendering.
 
 ## Project structure
 
