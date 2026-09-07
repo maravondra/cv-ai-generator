@@ -418,8 +418,8 @@ def paginate(flowables, width, page_heights):
 # Číslované PDF (patička "Strana X z Y")
 # ---------------------------------------------------------------------------
 AI_DISCLAIMER_LABEL = "Vygenerováno AI agentem, kterého vyvinul Marek Vondra  ·  "
-AI_DISCLAIMER_LINK_TEXT = "github.com/maravondra/cv-ai-generator"
-AI_DISCLAIMER_URL = "https://github.com/maravondra/cv-ai-generator"
+AI_DISCLAIMER_LINK_TEXT = "jak vzniklo moje CV"
+AI_DISCLAIMER_URL = "https://d2765x08ulae5y.cloudfront.net/"
 
 
 class NumberedCanvas(pdfcanvas.Canvas):
